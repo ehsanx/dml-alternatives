@@ -1,0 +1,65 @@
+"seed","estimator","nuisance","estimate"
+1,"g-computation","full",-819.043418710106
+1,"IPTW","full",-14629.0144055982
+1,"AIPW","full",-833.413676947913
+1,"TMLE","full",-1254.26587884094
+1,"AIPW = DML","cross-fit",-1284.46380668941
+1,"TMLE (CV-TMLE)","cross-fit",-5186.12864497822
+1,"AIPW (DC-AIPW)","double-cross-fit",-880.637680002633
+1,"TMLE (DC-TMLE)","double-cross-fit",-5643.73771774872
+2,"g-computation","full",-767.741818846473
+2,"IPTW","full",-14493.2206182411
+2,"AIPW","full",-791.530818177645
+2,"TMLE","full",-1499.29102160907
+2,"AIPW = DML","cross-fit",-1146.48152313036
+2,"TMLE (CV-TMLE)","cross-fit",-4512.85214192698
+2,"AIPW (DC-AIPW)","double-cross-fit",-836.64827657524
+2,"TMLE (DC-TMLE)","double-cross-fit",-4234.33961315663
+3,"g-computation","full",-881.849929877096
+3,"IPTW","full",-14450.0033271815
+3,"AIPW","full",-908.432997000092
+3,"TMLE","full",-1683.47060976935
+3,"AIPW = DML","cross-fit",-1297.74023799279
+3,"TMLE (CV-TMLE)","cross-fit",-5017.98830007236
+3,"AIPW (DC-AIPW)","double-cross-fit",-660.653169160419
+3,"TMLE (DC-TMLE)","double-cross-fit",-4787.0897411737
+4,"g-computation","full",-1109.16356169602
+4,"IPTW","full",-14449.5488629291
+4,"AIPW","full",-1141.17488430162
+4,"TMLE","full",-2093.06825549265
+4,"AIPW = DML","cross-fit",-1424.78677205269
+4,"TMLE (CV-TMLE)","cross-fit",-4750.37337073574
+4,"AIPW (DC-AIPW)","double-cross-fit",-609.236619965149
+4,"TMLE (DC-TMLE)","double-cross-fit",-4125.42259424594
+5,"g-computation","full",-1254.73364251638
+5,"IPTW","full",-14429.7567012461
+5,"AIPW","full",-1260.24522607245
+5,"TMLE","full",-1410.13776222038
+5,"AIPW = DML","cross-fit",-1482.37280108959
+5,"TMLE (CV-TMLE)","cross-fit",-5136.83551970926
+5,"AIPW (DC-AIPW)","double-cross-fit",-642.628625508448
+5,"TMLE (DC-TMLE)","double-cross-fit",-4343.81333639969
+6,"g-computation","full",-654.580630197239
+6,"IPTW","full",-14340.1712976812
+6,"AIPW","full",-682.838233635902
+6,"TMLE","full",-1489.78808835677
+6,"AIPW = DML","cross-fit",-1271.22758557916
+6,"TMLE (CV-TMLE)","cross-fit",-5158.23435347693
+6,"AIPW (DC-AIPW)","double-cross-fit",-672.154343297363
+6,"TMLE (DC-TMLE)","double-cross-fit",-5146.10735878523
+7,"g-computation","full",-768.187718558316
+7,"IPTW","full",-14469.2205194782
+7,"AIPW","full",-794.726556738958
+7,"TMLE","full",-1588.21125453763
+7,"AIPW = DML","cross-fit",-1610.69398256514
+7,"TMLE (CV-TMLE)","cross-fit",-5384.16395063819
+7,"AIPW (DC-AIPW)","double-cross-fit",-1268.58027279734
+7,"TMLE (DC-TMLE)","double-cross-fit",-4872.02706257914
+8,"g-computation","full",-788.458120099103
+8,"IPTW","full",-14586.9308633993
+8,"AIPW","full",-810.882974651551
+8,"TMLE","full",-1462.19103270069
+8,"AIPW = DML","cross-fit",-963.740218080432
+8,"TMLE (CV-TMLE)","cross-fit",-3641.49164634701
+8,"AIPW (DC-AIPW)","double-cross-fit",-176.884763147083
+8,"TMLE (DC-TMLE)","double-cross-fit",-5403.75121944004

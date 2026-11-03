@@ -1,0 +1,3 @@
+"study","unit","seed","realization","method","estimate","se","ci_lo","ci_hi","truth","tmle_converged","tmle_score_resid","clip_raw_min","clip_raw_max","n_clipped","covers","seconds"
+"nhefs_r1","r1",1,NA,"DC-AIPW",3.22892062132386,0.501807751390034,2.24537742859939,4.21246381404832,NA,NA,NA,0.0717575384484098,0.708867354412994,0,NA,28.897882938385
+"nhefs_r1","r1",1,NA,"DC-TMLE",3.22124383125376,0.502763329576917,2.235827705283,4.20665995722452,NA,TRUE,1.20987892814351e-17,0.0717575384484098,0.708867354412994,0,NA,28.897882938385

@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the paper and this repository."
+title: "dml-alternatives: companion code for Three Routes to One Answer"
+authors:
+  - family-names: Karim
+    given-names: M. Ehsan
+    affiliation: University of British Columbia
+    orcid: "https://orcid.org/0000-0002-0346-2871"
+repository-code: "https://github.com/ehsanx/dml-alternatives"
+url: "https://ehsanx.github.io/dml-alternatives/"
+license: MIT
+preferred-citation:
+  type: article
+  title: "Three Routes to One Answer: Reconciling AIPW, TMLE, and Double Machine Learning for Applied Researchers"
+  authors:
+    - family-names: Karim
+      given-names: M. Ehsan
+      affiliation: University of British Columbia
+      orcid: "https://orcid.org/0000-0002-0346-2871"
+  year: 2026
+  doi: "10.48550/arXiv.2609.26142"
+  url: "https://arxiv.org/abs/2609.26142"

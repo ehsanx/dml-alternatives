@@ -1,0 +1,17 @@
+"dataset","estimator","nuisance","estimate","se","ci_lo","ci_hi"
+"RHC (right heart cath -> dth30)","g-computation","full",0.025889862109547,NA,NA,NA
+"RHC (right heart cath -> dth30)","IPTW","full",0.0628860458890213,NA,NA,NA
+"RHC (right heart cath -> dth30)","AIPW","full",0.0327340518228255,0.00609250148392874,0.0207927489143251,0.0446753547313258
+"RHC (right heart cath -> dth30)","TMLE","full",0.0525944581589537,0.0061041375486511,0.0406303485635976,0.0645585677543099
+"RHC (right heart cath -> dth30)","AIPW = DML","cross-fit",0.0437322988163752,0.011988667613729,0.0202345102934663,0.0672300873392841
+"RHC (right heart cath -> dth30)","TMLE (CV-TMLE)","cross-fit",0.046960233966313,0.0121446817091138,0.02315665781645,0.070763810116176
+"RHC (right heart cath -> dth30)","AIPW (DC-AIPW)","double-cross-fit",0.0453533531403376,0.0122484952902743,0.0213463023713999,0.0693604039092753
+"RHC (right heart cath -> dth30)","TMLE (DC-TMLE)","double-cross-fit",0.0496655971179265,0.0122360411243716,0.0256829565141582,0.0736482377216948
+"NHEFS (smoking cessation -> weight change)","g-computation","full",3.26796262597285,NA,NA,NA
+"NHEFS (smoking cessation -> weight change)","IPTW","full",3.18742771782993,NA,NA,NA
+"NHEFS (smoking cessation -> weight change)","AIPW","full",3.31698634236364,0.41722466178663,2.49922600526185,4.13474667946544
+"NHEFS (smoking cessation -> weight change)","TMLE","full",3.32545796111413,0.417269801854324,2.50760914947965,4.1433067727486
+"NHEFS (smoking cessation -> weight change)","AIPW = DML","cross-fit",3.40961180021142,0.47973778116644,2.4693257491252,4.34989785129764
+"NHEFS (smoking cessation -> weight change)","TMLE (CV-TMLE)","cross-fit",3.41391521549938,0.479751429086705,2.47360241448944,4.35422801650932
+"NHEFS (smoking cessation -> weight change)","AIPW (DC-AIPW)","double-cross-fit",3.22892062132386,0.501807751390034,2.24537742859939,4.21246381404832
+"NHEFS (smoking cessation -> weight change)","TMLE (DC-TMLE)","double-cross-fit",3.22124383125376,0.502763329576917,2.235827705283,4.20665995722452

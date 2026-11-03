@@ -1,0 +1,44 @@
+# Edited environment record. Written by sessionInfo() on the Windows workstation that ran the analyses; for
+# publication, the operating-system build number and the time zone were removed on 2026-11-01. Everything
+# else is as recorded: R, platform, BLAS/LAPACK, locale and package versions.
+
+R version 4.5.1 (2025-06-13 ucrt)
+Platform: x86_64-w64-mingw32/x64
+Running under: Windows 11 x64
+
+Matrix products: default
+  LAPACK version 3.12.1
+
+locale:
+[1] LC_COLLATE=English_Canada.utf8  LC_CTYPE=English_Canada.utf8   
+[3] LC_MONETARY=English_Canada.utf8 LC_NUMERIC=C                   
+[5] LC_TIME=English_Canada.utf8    
+
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+[1] compiler_4.5.1
+
+== analysis package versions (from installed DESCRIPTIONs; not loaded) ==
+  SuperLearner   2.0.29
+  tmle           2.1.1
+  AIPW           0.6.9.3
+  DoubleML       1.0.2
+  tmle3          0.2.0
+  sl3            1.4.5
+  ranger         0.18.0
+  glmnet         4.1.10
+  earth          5.3.4
+  nnls           1.6
+  causaldata     0.1.4
+  haven          2.5.5
+  ggplot2        4.0.3
+  survey         4.4.8
+  surveyCV       0.2.0
+  svytmle        0.1.1
+  origami        1.0.8
+  mlr3           1.7.1
+  data.table     1.17.8

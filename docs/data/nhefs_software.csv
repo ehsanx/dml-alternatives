@@ -1,0 +1,6 @@
+"source","AIPW","TMLE","DML_crossfit"
+"hand-coded (this paper)",3.31698634236364,3.32545796111413,3.40961180021142
+"tmle (Gruber & van der Laan)",NA,3.38358552651319,NA
+"AIPW (Zhong et al.)",3.49215411043823,NA,NA
+"DoubleML (Bach et al.)",NA,NA,3.45850239084951
+"tmle3 (tlverse)",NA,3.40183756482121,NA

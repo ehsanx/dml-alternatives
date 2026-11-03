@@ -1,0 +1,5 @@
+"dataset","n","n_treated","outcome_mean","n_covariate_columns","design_fixed_all_50"
+"NHEFS (smoking cessation -> weight change)",1566,403,2.6382997865645,9,NA
+"RHC (right heart cath -> dth30)",5735,2184,0.334437663469922,66,NA
+"LaLonde/NSW (psid)",2675,185,20502.3755691728,8,NA
+"IHDP (realizations 1-50)",747,139,NA,25,TRUE

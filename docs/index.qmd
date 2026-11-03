@@ -1,0 +1,489 @@
+---
+title: "Reproducing the manuscript numbers, tables, and figures"
+subtitle: "Companion to *Three Routes to One Answer: Reconciling AIPW, TMLE, and Double Machine Learning for Applied Researchers*"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    embed-resources: true
+    code-fold: false
+    df-print: kable
+    fig-align: center
+knitr:
+  opts_chunk:
+    echo: true
+    message: false
+    warning: false
+    comment: "#>"
+---
+
+The figures and data-bearing tables of the manuscript prepared for arXiv version 2
+([arXiv:2609.26142](https://arxiv.org/abs/2609.26142); v2 forthcoming) are regenerated below **directly from the committed result CSVs**, and a numeric audit checks the reported numbers
+against them; the Super Learner engine is **not** re-run here. Each figure is
+the PDF drawn by [`R/make_figures.R`](https://github.com/ehsanx/dml-alternatives/blob/main/R/make_figures.R) (the R scripts in
+[`R/figures/`](https://github.com/ehsanx/dml-alternatives/tree/main/R/figures) and
+[`python/paper_figures.py`](https://github.com/ehsanx/dml-alternatives/blob/main/python/paper_figures.py)), shown as a 200-dpi image; the
+three schematics (Figures 1, 3 and 4) use no data. The estimator code lives in
+[`R/`](https://github.com/ehsanx/dml-alternatives/tree/main/R); the results it produced are
+frozen in [`docs/data/`](https://github.com/ehsanx/dml-alternatives/tree/main/docs/data). For
+the methods themselves, read the paper.
+
+::: {.callout-important}
+## Double cross-fitting corrected (October 2026)
+
+The double cross-fit (DC-AIPW, DC-TMLE) released with arXiv version 1 averaged the predictions of both
+role assignments, so the propensity and outcome models were not trained on disjoint folds. The engine
+now uses one fixed rotation (score fold *v* with *g* fit on fold *v*+1 and *Q* on fold *v*+2, mod 3),
+and every double-cross-fit result was rerun with the original fold seeds. The CSVs below carry the
+corrected rows; every other row is unchanged. The repository
+[`README`](https://github.com/ehsanx/dml-alternatives/blob/main/README.md#correction) lists the main
+corrected values.
+:::
+
+To reproduce the CSVs from scratch instead (re-running the engine), see the scripts in
+[`R/`](https://github.com/ehsanx/dml-alternatives/tree/main/R), the repository
+[`README`](https://github.com/ehsanx/dml-alternatives/blob/main/README.md), and the data sources and computing
+environments [at the end of this page](#data-sources).
+
+```{r setup}
+## Stage the frozen CSVs in output/, where R/ihdp_contrasts.R reads and writes, and read them from
+## there. Nothing below fits a model or touches raw microdata. The figures are the PDFs that
+## R/render_page.R drew before rendering (output/figures/), shown as 200-dpi images.
+dir.create("output", showWarnings = FALSE)
+invisible(file.copy(list.files("data", full.names = TRUE), "output", overwrite = TRUE))
+
+rd  <- function(f) read.csv(file.path("output", f), check.names = FALSE, stringsAsFactors = FALSE)
+kab <- function(x, ...) knitr::kable(x, ...)
+fig <- function(name) knitr::include_graphics(file.path("..", "output", "figures", "png", paste0(name, ".png")))
+## a numeric table as written by R/make_tables.R, without its title line (the heading gives it)
+tab <- function(n) cat(readLines(file.path("..", "output", "tables", sprintf("table%02d.md", n)))[-(1:2)], sep = "\n")
+```
+
+# The ten figures and the manuscript's copies {#figures}
+
+[`R/render_page.R`](https://github.com/ehsanx/dml-alternatives/blob/main/R/render_page.R) draws the ten figures, then compares each PDF
+with the manuscript's copy in [`figures/reference/`](https://github.com/ehsanx/dml-alternatives/tree/main/figures/reference)
+([`tools/compare_pdf.py`](https://github.com/ehsanx/dml-alternatives/blob/main/tools/compare_pdf.py)): page
+count and page boxes, the page structure (content streams byte for byte, and every font and graphics resource
+they name), and both files rendered at 144 dpi. A pass needs Arial and the package versions in `renv.lock` and
+`requirements.txt`; elsewhere, `--text-only` is a limited fallback that compares the words only.
+
+```{r compare, echo = FALSE, comment = ""}
+cat(readLines(file.path("..", "output", "figures", "compare.txt")), sep = "\n")
+```
+
+# Figure 1 — NHEFS causal DAG {#fig-dag}
+
+The hypothesized confounding structure (`fig:dag`), drawn by
+[`R/figures/fig_dag.R`](https://github.com/ehsanx/dml-alternatives/blob/main/R/figures/fig_dag.R) (no data): the nine baseline covariates
+`X` are common causes of quitting smoking (`A`) and weight change (`Y`), and form the adjustment set.
+
+```{r fig-dag, echo = FALSE}
+fig("nhefs_dag")
+```
+
+# Figure 2 — NHEFS propensity overlap {#fig-nhefs-overlap}
+
+`fig:nhefs-overlap`, drawn by [`R/figures/fig_overlap.R`](https://github.com/ehsanx/dml-alternatives/blob/main/R/figures/fig_overlap.R) from
+`data/nhefs_overlap_data.csv`: the scores of the overlap diagnostic's own fit. That fit was not
+seeded, so the file is the reference. The truncation audit of the analysis fits is
+[below](#tab-truncation).
+
+```{r fig-nhefs-overlap}
+fig("nhefs_overlap")
+pp <- rd("nhefs_overlap_data.csv")
+cat(sprintf("propensity range: [%.3f, %.3f]\n", min(pp$pi), max(pp$pi)))
+```
+
+# Figure 3 — One score, two choices, one target {#fig-concept}
+
+`fig:concept`, drawn by [`python/paper_figures.py`](https://github.com/ehsanx/dml-alternatives/blob/main/python/paper_figures.py) (no data):
+one Super Learner supplies both nuisances, which assemble one efficient influence function; a
+combination rule (rows) and a fitting scheme (columns) give the six doubly-robust estimators of one
+target.
+
+```{r fig-concept, echo = FALSE}
+fig("concept_grid")
+```
+
+# Figure 4 — Fitting schemes {#fig-fitting-schemes}
+
+`fig:fitting-schemes`, drawn by [`python/paper_figures.py`](https://github.com/ehsanx/dml-alternatives/blob/main/python/paper_figures.py)
+(no data): which rows train the initial nuisance fits and which rows they predict, for the
+full-sample, single cross-fit (*V* = 5) and double cross-fit (*V* = 3) schemes.
+
+```{r fig-fitting-schemes, echo = FALSE}
+fig("fitting_schemes")
+```
+
+# Figure 5 — NHEFS estimator panel {#fig-nhefs-panel}
+
+`fig:nhefs-panel`, drawn by [`R/figures/fig_forests.R`](https://github.com/ehsanx/dml-alternatives/blob/main/R/figures/fig_forests.R) from
+`data/nhefs_panel_table.csv`.
+
+```{r fig-nhefs-panel, echo = FALSE}
+fig("nhefs_forest")
+```
+
+# Figure 6 — RHC estimator panel {#fig-rhc-panel}
+
+`fig:rhc-panel`, drawn by [`R/figures/fig_forests.R`](https://github.com/ehsanx/dml-alternatives/blob/main/R/figures/fig_forests.R) from
+`data/real_application.csv` and `data/rhc_reps_table.csv`.
+
+```{r fig-rhc-panel, echo = FALSE}
+fig("rhc_forest")
+```
+
+# Figure 7 — IHDP calibration {#fig-ihdp}
+
+`fig:ihdp-grading`, drawn by [`R/figures/fig_ihdp.R`](https://github.com/ehsanx/dml-alternatives/blob/main/R/figures/fig_ihdp.R) from
+`data/grade_table.csv`: mean bias, RMSE, 95% CI coverage and mean 95% CI width over 50 realizations
+× 20 fold partitions, each scored as a single split. Bias and coverage carry Monte Carlo intervals
+with the 50 realizations as the units. Coverage is conditional on the benchmark's fixed design; see
+[below](#tab-ihdp-design).
+
+```{r fig-ihdp, echo = FALSE}
+fig("ihdp_calibration")
+```
+
+# Figure 8 — RHC repetition study {#fig-rhc-reps}
+
+`fig:rhc-reps`, drawn by [`R/figures/fig_reps.R`](https://github.com/ehsanx/dml-alternatives/blob/main/R/figures/fig_reps.R) from
+`data/rhc_reps_table.csv`.
+
+```{r fig-rhc-reps, echo = FALSE}
+fig("rhc_reps")
+```
+
+# Figure 9 — Overlap and the spread of the estimates {#fig-positivity}
+
+`fig:positivity`, drawn by [`python/paper_figures.py`](https://github.com/ehsanx/dml-alternatives/blob/main/python/paper_figures.py). The
+upper panels are densities of two diagnostic fits: the NHEFS scores of Figure 2
+(`data/nhefs_overlap_data.csv`) and the seeded LaLonde/NSW–PSID diagnostic
+(`data/positivity_overlap.csv`, from part (1) of
+[`R/positivity_diagnostics.R`](https://github.com/ehsanx/dml-alternatives/blob/main/R/positivity_diagnostics.R)). The clipped peak of the
+LaLonde comparison group, about 154, is the Gaussian kernel density at R's default bandwidth on a fine
+grid; R's `density()` at its default 512 points gives about 123. The lower panels are the eight
+estimates (`data/nhefs_panel_table.csv`, medians over 100 splits; `data/results_all3.csv`, one split).
+
+```{r fig-positivity, echo = FALSE}
+fig("overlap_estimates")
+```
+
+# Figure 10 — One estimand across implementations and seeds {#fig-software-seeds}
+
+`fig:software-seeds`, drawn by [`python/paper_figures.py`](https://github.com/ehsanx/dml-alternatives/blob/main/python/paper_figures.py)
+from `data/nhefs_software.csv` and `data/nhefs_matched_repeated.csv`.
+
+```{r fig-software-seeds, echo = FALSE}
+fig("software_seeds")
+```
+
+# Companion diagnostic: IHDP overlap {#ihdp-overlap}
+
+Not a manuscript figure. Step 5 of the manuscript cites it for the IHDP design's overlap: the
+estimated-propensity densities of IHDP realization 1, from the seeded diagnostic
+`data/positivity_overlap.csv`.
+
+```{r ihdp-overlap, fig.width=6, fig.height=3}
+library(ggplot2)
+po <- rd("positivity_overlap.csv")
+ih <- po[grepl("^IHDP", po$dataset), ]
+ggplot(ih, aes(pi, fill = group)) +
+  geom_density(alpha = 0.5, colour = NA) +
+  scale_fill_manual(values = c(control = "#B8860B", treated = "#AA3377")) +
+  labs(x = "estimated P(A = 1 | X), IHDP realization 1", y = "density", fill = NULL) +
+  theme_bw(base_size = 11) + theme(legend.position = "top")
+cat(sprintf("IHDP realization 1: %d treated, %d comparison; scores %.3f to %.3f\n",
+            sum(ih$group == "treated"), sum(ih$group == "control"), min(ih$pi), max(ih$pi)))
+```
+
+# Sample sizes and design facts {#tab-data-summary}
+
+`data/data_summary.csv`, written by [`R/data_summary.R`](https://github.com/ehsanx/dml-alternatives/blob/main/R/data_summary.R) from the
+raw data: the sample sizes and design facts the manuscript quotes (Tables 1 and 3, Steps 4 to 6),
+which the [audit](#audit) checks. For IHDP it confirms that all 50 realizations share one design.
+
+```{r data-summary}
+kab(rd("data_summary.csv"), row.names = FALSE, digits = 4)
+```
+
+# The numeric tables {#tables}
+
+[`R/make_tables.R`](https://github.com/ehsanx/dml-alternatives/blob/main/R/make_tables.R) writes every numeric table of the manuscript from
+the frozen CSVs, with the manuscript's rounding and row order (`output/tables/`). Tables 2, 5, 7 and 12
+are text only.
+
+# Table 1 — NHEFS analytic sample {#tab-nhefs-sample}
+
+`tab:nhefs-sample`, from `data/data_summary.csv`.
+
+```{r tab-nhefs-sample, results = "asis", echo = FALSE}
+tab(1)
+```
+
+# Table 3 — NHEFS overlap diagnostics {#tab-nhefs-overlap}
+
+`tab:nhefs-overlap`, from `data/data_summary.csv`, `data/nhefs_overlap_data.csv` and the engine's
+truncation window.
+
+```{r tab-nhefs-overlap, results = "asis", echo = FALSE}
+tab(3)
+```
+
+# Table 4 — What moves the NHEFS estimate {#tab-knobs}
+
+`tab:knobs`, from `data/nhefs_panel_table.csv` and `data/nhefs_software.csv`. The first three rows compare
+estimates within the engine (full-sample estimates are single fits; split-based estimates are medians over
+*r* = 100 splits); the last row compares single runs of the five implementations, which differ in several
+settings at once.
+
+```{r tab-knobs, results = "asis", echo = FALSE}
+tab(4)
+```
+
+The ranges that the manuscript's caption gives:
+
+```{r knobs-ranges}
+p   <- rd("nhefs_panel_table.csv"); sw <- rd("nhefs_software.csv")
+dr6 <- c(p$estimate[is.na(p$r) & p$estimator %in% c("AIPW (one-step)", "TMLE")],
+         p$estimate[p$r %in% 100 & p$estimator %in% c("DML (cross-fit AIPW)", "CV-TMLE", "DC-AIPW", "DC-TMLE")])
+swr <- function(pat) sw[grepl(pat, sw$source), ][1, ]
+swv <- c(unlist(swr("^hand")[c("AIPW", "TMLE", "DML_crossfit")]), swr("^tmle \\(")$TMLE, swr("Zhong")$AIPW,
+         swr("DoubleML")$DML_crossfit, swr("tmle3")$TMLE)
+cat(sprintf("six doubly-robust estimates of the engine: %.2f to %.2f kg\nfive implementations, single runs: %.2f to %.2f kg\n",
+            min(dr6), max(dr6), min(swv), max(swv)))
+```
+
+# Table 6 — NHEFS estimator panel {#tab-eif-repair}
+
+Singly-robust baselines and the doubly-robust repair (`tab:eif-repair`), from
+`data/nhefs_panel_table.csv` (the full-sample rows, `r=NA`).
+
+```{r tab-eif-repair, results = "asis", echo = FALSE}
+tab(6)
+```
+
+# Repeated splits: how much a single split moves the estimate {#tab-splits}
+
+Behind the *r* = 100 rows of Figures 5 and 6: the single-split estimates of each split-based
+route across the 100 splits (`data/nhefs_reps_raw.csv`, `data/rhc_reps_raw.csv`), and the RHC
+running medians (`data/rhc_reps_table.csv`; Step 5).
+
+```{r splits}
+p  <- rd("nhefs_panel_table.csv")
+nr <- rd("nhefs_reps_raw.csv"); rw <- rd("rhc_reps_raw.csv"); rt <- rd("rhc_reps_table.csv")
+kab(data.frame(estimator = names(tapply(nr$estimate, nr$method, sd)),
+               `NHEFS SD across splits (kg)` = round(tapply(nr$estimate, nr$method, sd), 3),
+               check.names = FALSE, row.names = NULL))
+full2 <- p$estimate[is.na(p$r) & p$estimator %in% c("AIPW (one-step)", "TMLE")]
+spans <- tapply(nr$estimate, nr$rep, function(e) diff(range(c(e, full2))))
+cat(sprintf("NHEFS six doubly-robust estimates on a single split: median span %.2f kg (IQR %.2f-%.2f)\n",
+            median(spans), quantile(spans, .25), quantile(spans, .75)))
+settle <- function(s, tol = 0.001) { ok <- abs(s$estimate - s$estimate[s$r == 100]) < tol
+  for (k in seq_along(ok)) if (all(ok[k:length(ok)])) return(s$r[k]); NA }
+kab(do.call(rbind, lapply(split(rt, rt$method), function(s) { s <- s[order(s$r), ]
+  data.frame(estimator = s$method[1], `r = 1` = round(s$estimate[s$r == 1], 4),
+             `r = 100` = round(s$estimate[s$r == 100], 4),
+             `SD across splits` = round(sd(rw$estimate[rw$method == s$method[1]]), 4),
+             `within 0.001 from r =` = settle(s),
+             `largest distance from r = 100` = round(max(abs(s$estimate - s$estimate[s$r == 100])), 4),
+             `CI width growth (%)` = round(100 * (s$ci_width[s$r == 100] / s$ci_width[s$r == 1] - 1), 1),
+             check.names = FALSE) })), row.names = FALSE)
+```
+
+# RHC: in-sample vs out-of-fold residuals {#tab-rhc-residuals}
+
+`data/rhc_residual_diagnostic.csv`, from
+[`R/rhc_residual_diagnostic.R`](https://github.com/ehsanx/dml-alternatives/blob/main/R/rhc_residual_diagnostic.R)
+(Step 4): the original seed-1 RHC fits (`real_application.R`), full-sample and five-fold cross-fit, with
+the outcome model's residual root-mean-square, the g-computation plug-in, and AIPW's mean weighted
+correction. Figure 6 shows the same full-sample fit, but its split-based rows are the first of 100 splits
+and the median over them, so the seed-1 cross-fit AIPW here (0.044) differs from Figure 6's DML (0.043).
+Without ground truth, the comparison does not establish which estimate is more accurate.
+
+```{r rhc-residuals}
+kab(transform(rd("rhc_residual_diagnostic.csv"), resid_rms = round(resid_rms, 3), gcomp = round(gcomp, 4),
+              correction = round(correction, 4), aipw = round(aipw, 4)), row.names = FALSE)
+```
+
+# IHDP: design, paired contrasts, and the aggregated check {#tab-ihdp-design}
+
+All 50 IHDP realizations share one fixed set of 747 covariate profiles and treatment
+assignments; each realization's target is the sample average of its own simulated effect
+contrast. The coverage in Figure 7 is therefore conditional on this design, for a sample-average
+target. The realizations are generated independently given the design, so the realization is the
+Monte Carlo unit. [`R/ihdp_contrasts.R`](https://github.com/ehsanx/dml-alternatives/blob/main/R/ihdp_contrasts.R)
+recomputes the paired contrasts and the exploratory *r* = 20 check from `data/grade_raw.csv`; the
+chunk below runs it and confirms that it reproduces the committed CSVs.
+
+```{r ihdp-contrasts}
+gr <- rd("grade_raw.csv"); tr <- tapply(gr$truth, gr$realization, unique)
+cat(sprintf("%d realizations x %d fold seeds; sample-average targets %.2f to %.2f\n",
+            length(tr), length(unique(gr$seed)), min(tr), max(tr)))
+frozen_ct <- rd("ihdp_contrasts.csv"); frozen_pil <- rd("ihdp_aggregated_pilot.csv")
+invisible(capture.output(source("../R/ihdp_contrasts.R")))
+stopifnot(isTRUE(all.equal(rd("ihdp_contrasts.csv"), frozen_ct)),
+          isTRUE(all.equal(rd("ihdp_aggregated_pilot.csv"), frozen_pil)))
+kab(transform(frozen_ct, difference = round(difference, 4), paired_mcse = round(paired_mcse, 4), t = round(t, 2)))
+kab(frozen_pil)
+p10 <- function(e) { s <- gr[gr$estimator == e & gr$realization <= 10, ]; tapply(as.numeric(s$covers), s$realization, mean) }
+d10 <- p10("AIPW = DML") - p10("AIPW")
+cat(sprintf("Small-pilot example (Step 5), realizations 1-10 alone: AIPW->DML coverage gap %.3f (paired MCSE %.3f)\n",
+            mean(d10), sd(d10) / sqrt(length(d10))))
+cat(sprintf("50/50: 95%% Clopper-Pearson interval %.2f-1.00\n", qbeta(0.025, 50, 1)))
+```
+
+# Table 8 — LaLonde/NSW-PSID: every route under poor overlap {#tab-positivity-full}
+
+`data/results_all3.csv` (`tab:positivity-full`): each estimator on the full, untrimmed sample;
+split-based rows use one random split. The \$1,794 experimental estimate concerns a different
+population and is not a benchmark for these estimates, so no bias or coverage is shown.
+
+```{r tab-positivity-full, results = "asis", echo = FALSE}
+tab(8)
+```
+
+Seed sensitivity (`data/lalonde_seed_sweep.csv`, 8 seeds): the values move, but every
+doubly-robust estimate stays negative, and the out-of-fold TMLE estimates stay far below the
+full-sample ones.
+
+```{r lalonde-sweep}
+sw8 <- rd("lalonde_seed_sweep.csv")
+kab(do.call(rbind, lapply(split(sw8, sw8$estimator), function(x) data.frame(
+  estimator = x$estimator[1], nuisance = x$nuisance[1], median = round(median(x$estimate)),
+  min = round(min(x$estimate)), max = round(max(x$estimate))))), row.names = FALSE)
+```
+
+# Table 9 — LaLonde/NSW-PSID trimming {#tab-positivity}
+
+`data/positivity_trimming_lalonde.csv` (`tab:positivity`): restricting to the estimated
+common-support region discards most of the sample and changes the population, and with it the
+estimand; the trimmed intervals are wide and include zero.
+
+```{r tab-positivity-trimming, results = "asis", echo = FALSE}
+tab(9)
+```
+
+# Table 10 — Reporting checklist: numeric entries and settings {#tab-checklist}
+
+`tab:checklist` is a text table. Its numeric entries, and the settings it names, come from the frozen
+CSVs and from the engine itself (`R/estimators.R`: the Super Learner library, the fold counts and the
+truncation window).
+
+```{r tab-checklist, results = "asis", echo = FALSE}
+tab(10)
+```
+
+# Table 11 — Software comparison on NHEFS {#tab-software}
+
+`data/nhefs_software.csv` (`tab:software`), in the manuscript's layout: one run of each implementation on
+the same estimand. The entries differ in several settings at once (fitting scheme, library, combination
+rule), and each carries single-split noise, so the table alone cannot say which setting moves the number.
+
+```{r tab-software, results = "asis", echo = FALSE}
+tab(11)
+```
+
+# Software reconciliation over 20 seeds {#tab-matched}
+
+`data/nhefs_matched_repeated.csv`: the three implementations built on the paper's Super Learner
+library (the hand-coded engine, `tmle`, and `AIPW`), each re-run with 20 seeds and an explicit
+0.025 propensity bound. The single runs scatter (SD across seeds about 0.08 kg for a single
+five-fold cross-fit), but the medians agree to within 0.01 kg. The combined differences yield
+similar medians here; the effects of individual implementation choices are not isolated (Step 7).
+
+```{r matched}
+mr <- rd("nhefs_matched_repeated.csv")
+cols <- c("hand_DML","AIPW_pkg","tmle_pkg")
+kab(data.frame(
+  implementation = c("hand-coded engine (DML)", "AIPW package", "tmle package"),
+  `median (kg)`  = round(sapply(mr[cols], median, na.rm = TRUE), 2),
+  `SD across seeds` = round(sapply(mr[cols], sd, na.rm = TRUE), 3),
+  check.names = FALSE, row.names = NULL))
+```
+
+# Truncation audit {#tab-truncation}
+
+`data/nhefs_truncation_audit.csv`: pre-truncation propensity ranges of the five-learner NHEFS
+analysis fits, and the number of units the [0.025, 0.975] bound clips (Step 1).
+
+```{r truncation}
+kab(rd("nhefs_truncation_audit.csv"), row.names = FALSE)
+```
+
+# Supplementary: three-benchmark comparison (not in the manuscript) {#tab-all3}
+
+`data/results_all3.csv`: one run of the full panel on IHDP realization 1, LaLonde/NSW-PSID, and
+Twins. Twins is not used in the manuscript and its double-cross-fit rows were not rerun after the
+correction, so the table has no double-cross-fit rows for Twins. For LaLonde
+the `truth` column holds the \$1,794 experimental estimate, which concerns a different
+population; bias and coverage are shown only for IHDP and Twins.
+
+```{r all3}
+r3 <- rd("results_all3.csv")
+show <- r3[, c("dataset","estimator","nuisance","estimate","ci_lo","ci_hi","bias","covers")]
+show$bias[grepl("psid", show$dataset, ignore.case = TRUE)] <- NA
+show$covers[grepl("psid", show$dataset, ignore.case = TRUE)] <- NA
+kab(transform(show, estimate = round(estimate, 3), ci_lo = round(ci_lo, 3),
+              ci_hi = round(ci_hi, 3), bias = round(bias, 3)), row.names = FALSE)
+```
+
+# Numeric audit — every reported number vs. its CSV {#audit}
+
+The deterministic audit
+[`R/verify_numbers.R`](https://github.com/ehsanx/dml-alternatives/blob/main/R/verify_numbers.R)
+re-derives the data-bearing numbers in the manuscript from these same CSVs and diffs each against
+the printed value. A table with `0 FAIL` means the paper and the committed results agree.
+
+```{r audit}
+invisible(capture.output(source("../R/verify_numbers.R")))
+cat(sprintf("%d checks: %d PASS, %d FAIL\n",
+            nrow(res), sum(res$status == "PASS"), sum(res$status == "FAIL")))
+kab(res)
+```
+
+# Data sources and computing environments {#data-sources}
+
+The manuscript's Data and Code availability statements refer to this section and to the repository
+[`README`](https://github.com/ehsanx/dml-alternatives/blob/main/README.md#raw-data). Nothing on this page reads
+the raw data: they are needed only to refit the analyses, and none of them is redistributed with the manuscript
+or here. The source's terms of use apply to each dataset.
+
+| Dataset | Source | Files, under `data/` |
+|---|---|---|
+| NHEFS (Hernán and Robins, 2020) | the `nhefs` data of the `causaldata` R package (version 0.1.4 on CRAN) | none |
+| Right-heart catheterization (Connors et al., 1996) | Vanderbilt's CSV export of the RHC dataset, `rhc.csv`, from the [Right Heart Catheterization Dataset page](https://hbiostat.org/data/repo/rhc) of hbiostat.org (<https://hbiostat.org/data/repo/rhc.csv>). The file analysed is byte-identical to that download (2,320,412 bytes; checked 2026-11-02). The `dr3` loader instead retrieves the R-format export through `Hmisc::getHdata()`, which differs slightly. | `rhc/rhc.csv` |
+| LaLonde/NSW–PSID (LaLonde, 1986; Dehejia and Wahba, 1999) | the Dehejia–Wahba experimental sample, `nsw_dw.dta`, and the PSID comparison sample, `psid_controls.dta`, from <https://users.nber.org/~rdehejia/nswdata2.html> | `lalonde_nsw/nsw_dw.dta`, `lalonde_nsw/psid_controls.dta` |
+| IHDP semi-synthetic benchmark (Hill, 2011) | realizations 1–50, `ihdp_npci_1.csv` to `ihdp_npci_50.csv`, from <https://github.com/claudiashi57/dragonnet>, folder `dat/ihdp/csv/` at commit `2e51b24788` | `ihdp/ihdp_npci_1.csv` to `ihdp/ihdp_npci_50.csv` |
+| Twins (supplementary; Louizos et al., 2017) | `data/Twin_data.csv.gz` from <https://github.com/jsyoon0823/GANITE> at commit `e2997317d5` | `twins/Twin_data.csv.gz` |
+
+[`R/check_data.R`](https://github.com/ehsanx/dml-alternatives/blob/main/R/check_data.R) compares the files with
+their MD5 checksums, rows and columns,
+[`data/checksums.csv`](https://github.com/ehsanx/dml-alternatives/blob/main/data/checksums.csv):
+
+```{r checksums}
+kab(read.csv(file.path("..", "data", "checksums.csv")), row.names = FALSE)
+```
+
+| Environment | Used for | Recorded in |
+|---|---|---|
+| Windows workstation, R 4.5.1 | The original analyses other than the repeated-split and grading jobs; the corrected double-cross-fit run; the figures, this page and the audit | [`renv.lock`](https://github.com/ehsanx/dml-alternatives/blob/main/renv.lock); [`sessionInfo.txt`](https://github.com/ehsanx/dml-alternatives/blob/main/sessionInfo.txt), whose R, platform and package versions are printed below |
+| Linux cluster, R 4.4.0 | The repeated-split and grading jobs (`R/nhefs_panel_reps.R`, `R/reps_rhc.R`, `R/grade_ihdp.R`), apart from their double-cross-fit rows | not recorded: the package versions of the cluster's R library were not saved |
+| Python 3.10.6 | Figures 3, 4, 9 and 10 and the figure comparison | [`requirements.txt`](https://github.com/ehsanx/dml-alternatives/blob/main/requirements.txt) |
+
+```{r session-info, comment = ""}
+si <- readLines(file.path("..", "sessionInfo.txt"))
+pk <- grep("^== analysis package versions", si)
+cat(c(grep("^R version|^Platform|^Running under", si, value = TRUE), "", si[pk:length(si)]), sep = "\n")
+```
+
+**Fits that were not seeded.** The NHEFS propensity-overlap diagnostic (`data/nhefs_overlap_data.csv`) and the
+full-sample fits of the IHDP grading (`data/grade_raw.csv`) were not seeded per unit, so a rerun gives slightly
+different values; for these fits, the archived files are the reference. Rerunning `R/grade_ihdp.R` for
+realization 1 and fold seed 1 on the workstation reproduced both double-cross-fit rows exactly and the other six
+rows to within 0.04.
+
+**Refitting.** Refitting a stochastic analysis from the raw data need not reproduce the archived values exactly.
+Super Learner fits depend on learner-package versions and on the computing platform, and the rows from the
+cluster jobs cannot be guaranteed to regenerate exactly, because that environment's package versions are unknown.

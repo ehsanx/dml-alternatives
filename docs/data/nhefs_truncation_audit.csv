@@ -1,0 +1,4 @@
+fit,fits,raw_min,raw_max,max_clipped,total_clipped
+full sample (seed 1),1,0.0763,0.7215,0,0
+cross-fit V=5 (seed 1),1,0.0804,0.6943,0,0
+double cross-fit (seed 1 and reps 1-100),101,0.0323,0.8380,0,0

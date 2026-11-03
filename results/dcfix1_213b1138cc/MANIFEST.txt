@@ -1,0 +1,14 @@
+run_id: dcfix1_213b1138cc
+started: 2026-10-31 15:52:14 PDT
+engine: R/estimators.R md5 213b1138cc04454b37be4c76108942e0, as run (rule: score fold v with g from fold v+1, Q from fold v+2, mod 3)
+git HEAD: run from the author's working copy, not from a commit of this repository
+R: R version 4.5.1 (2025-06-13 ucrt)
+packages: SuperLearner 2.0.29; ranger 0.18.0; glmnet 4.1.10; earth 5.3.4; haven 2.5.5
+library: SL.mean, SL.glm, SL.glmnet, SL.ranger, SL.earth
+settings: V = 3 folds for DC; propensity truncation [0.025, 0.975]; TMLE outcome rescaled by its observed range; SL internal CV V = 5
+workers: 10; smoke run: FALSE
+studies and seeds: see the header of R/dcfix/run_dc_fix.R
+tasks: 1213
+relaunched: 2026-10-31 15:56:22 PDT (62 parts already on disk are reused)
+finished: 2026-10-31 17:33:09 PDT (96.7 min); failures: 0
+note (2026-11-01): paths in lines 3 and 10 normalised to this repository's layout and line 4 rewritten without the private commit; every recorded value is unchanged (see README.md)

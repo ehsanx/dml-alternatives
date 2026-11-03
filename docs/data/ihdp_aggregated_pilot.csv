@@ -1,0 +1,5 @@
+"estimator","realizations","included","inclusion"
+"AIPW = DML",50,50,1
+"TMLE (CV-TMLE)",50,50,1
+"AIPW (DC-AIPW)",50,50,1
+"TMLE (DC-TMLE)",50,50,1

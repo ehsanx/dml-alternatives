@@ -1,0 +1,4 @@
+"rule","n_kept","pct_kept","AIPW_DML","ci_lo","ci_hi","covers_1794"
+"none (all data)",2675,100,-1284,-2278,-291,FALSE
+"trim to [0.05, 0.95]",423,16,484,-1229,2196,TRUE
+"trim to [0.10, 0.90]",300,11,-27,-2214,2161,TRUE

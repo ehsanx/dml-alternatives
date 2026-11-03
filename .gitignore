@@ -1,0 +1,12 @@
+.Rhistory
+.RData
+*.Rproj
+output/
+
+# per-unit part files of R/dcfix/run_dc_fix.R
+results/*/parts/
+
+# raw data are not redistributed (see README.md); only the checksums are tracked
+data/*
+!data/checksums.csv
+__pycache__/
